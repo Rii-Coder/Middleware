@@ -20,8 +20,8 @@ public class NewMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        InterpreterClient client =  new InterpreterClient();
+        
         Context contexto = new Context("perro/hola/2", FormatosEnum.DON, FormatosEnum.CON);
-        System.out.println(client.interpretar(contexto));
+        System.out.println(InterpreterClient.interpretar(contexto));
     }
 }

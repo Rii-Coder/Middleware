@@ -14,8 +14,8 @@ public class InterpreterClient {
     public InterpreterClient(){
     }
     
-    public String interpretar(Context contexto){
-        FormatoExpression expresion = this.determinarExpression(contexto.getFromConversion());
+    public static String interpretar(Context contexto){
+        FormatoExpression expresion = determinarExpression(contexto.getFromConversion());
                 
         switch (contexto.getToConversion()) {
             case CON:
@@ -27,7 +27,7 @@ public class InterpreterClient {
         }
     }
     
-    private FormatoExpression determinarExpression(FormatosEnum fromConversion){
+    private static FormatoExpression determinarExpression(FormatosEnum fromConversion){
         switch (fromConversion) {
             case CON:
                 return new CONexpression();
