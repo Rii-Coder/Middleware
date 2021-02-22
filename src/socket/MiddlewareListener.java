@@ -44,7 +44,7 @@ public class MiddlewareListener implements Runnable{
 
                 DataInputStream entrada = new DataInputStream(socket.getInputStream());
                 String texto = entrada.readUTF(); 
-                System.out.println("Resultado:"+texto);
+                System.out.println("formato inicial: "+texto);
                 entrada.close();
                 servidorMiddleware.close();
                 
@@ -64,6 +64,7 @@ public class MiddlewareListener implements Runnable{
     public void mandarAlumno(String texto){
         Context context = new Context(texto, FormatosEnum.CON, FormatosEnum.DON);
         String transformado = InterpreterClient.interpretar(context);
+        System.out.println("formato transformado: "+transformado);
         
         try {
             Socket alumnoSocket = new Socket("localhost",4446);
@@ -72,7 +73,7 @@ public class MiddlewareListener implements Runnable{
             CommaObjectNotation con = new CommaObjectNotation();
             DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
             salida.writeUTF(transformado);
-
+            
             salida.close();
 
 
@@ -84,7 +85,7 @@ public class MiddlewareListener implements Runnable{
     public void mandarMaestro(String texto){
         Context context = new Context(texto, FormatosEnum.DON, FormatosEnum.CON);
         String transformado = InterpreterClient.interpretar(context);
-        
+        System.out.println("formato transformado: "+transformado);
         try{
             
             Socket maestroSocket = new Socket("localhost",4445);
