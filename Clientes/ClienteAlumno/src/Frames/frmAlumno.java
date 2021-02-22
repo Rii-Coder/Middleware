@@ -5,13 +5,14 @@
  */
 package Frames;
 
+import CommaObjectNotation.CommaObjectNotation;
+import alumnomaestro.Alumno;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,15 +29,21 @@ public class frmAlumno extends javax.swing.JFrame{
      */
     public frmAlumno() {
         initComponents();
-        
+        Thread hilo = new Thread(new AlumnoListener());
+        hilo.start();
         EnviaTexto envia= new EnviaTexto();
         btnEnviar.addActionListener(envia);
         this.agregarComponentes();
+        this.recibir();
     }
     
     public void agregarComponentes(){
         
         this.jtaResultado.setEditable(false);
+    }
+    
+    public void recibir(){
+
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -48,10 +55,8 @@ public class frmAlumno extends javax.swing.JFrame{
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        campoTexto = new javax.swing.JTextField();
         btnEnviar = new javax.swing.JButton();
         Titulo = new javax.swing.JLabel();
-        server = new javax.swing.JLabel();
         jtfNombre = new javax.swing.JTextField();
         jtfApellidos = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -65,17 +70,13 @@ public class frmAlumno extends javax.swing.JFrame{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jPanel1.add(campoTexto, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 331, 54));
 
         btnEnviar.setText("Enviar");
         jPanel1.add(btnEnviar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 260, 90, 54));
 
         Titulo.setFont(new java.awt.Font("Dialog", 0, 36)); // NOI18N
         Titulo.setText("Alumno");
-        jPanel1.add(Titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(292, 43, 145, -1));
-
-        server.setText("Servidor:");
-        jPanel1.add(server, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 110, 331, -1));
+        jPanel1.add(Titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 110, 145, -1));
         jPanel1.add(jtfNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 140, 30));
         jPanel1.add(jtfApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 140, 30));
 
@@ -151,7 +152,6 @@ public class frmAlumno extends javax.swing.JFrame{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Titulo;
     private javax.swing.JButton btnEnviar;
-    private javax.swing.JTextField campoTexto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -162,7 +162,6 @@ public class frmAlumno extends javax.swing.JFrame{
     private javax.swing.JTextArea jtaResultado;
     private javax.swing.JTextField jtfApellidos;
     private javax.swing.JTextField jtfNombre;
-    private javax.swing.JLabel server;
     // End of variables declaration//GEN-END:variables
 
     
@@ -173,14 +172,14 @@ public class frmAlumno extends javax.swing.JFrame{
 
             try {
                 Socket alumnoSocket = new Socket("localhost",4444);
-
+                Alumno alumno = new Alumno();
+                alumno.setNombre(jtfNombre.getText());
+                alumno.setApellido(jtfApellidos.getText());
+                alumno.setEdad((int)jsEdad.getValue()); 
+                
+                CommaObjectNotation con = new CommaObjectNotation();
                 DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
-                
-                
-
-                salida.writeUTF(campoTexto.getText());
-
-                campoTexto.setText("");
+                salida.writeUTF(con.transformar(alumno));
 
                 salida.close();
 
