@@ -5,16 +5,23 @@
  */
 package Frames;
 
+import DotObjectNotatiton.DotObjectNotatiton;
+import alumnomaestro.Alumno;
 import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.swing.JTextArea;
 
 /**
  *
  * @author Dhtey
  */
 public class MaestroListener implements Runnable{
-
+    private JTextArea jtaText;
+    
+    public MaestroListener(JTextArea area){
+        this.jtaText = area;
+    }
     @Override
     public void run() {
          try {
@@ -30,8 +37,14 @@ public class MaestroListener implements Runnable{
                 String texto = entrada.readUTF(); 
                 System.out.println("Resultado maestro:"+texto);
                 
+              
+                
                 entrada.close();
                 servidorMiddleware.close();
+                DotObjectNotatiton don = new DotObjectNotatiton();
+                Alumno alumno = don.transformaAlumno(texto);
+                this.jtaText.setText(alumno.toString());
+                
             }
 
         } catch (Exception e) {

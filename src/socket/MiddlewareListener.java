@@ -5,9 +5,17 @@
  */
 package socket;
 
+import CommaObjectNotation.CommaObjectNotation;
+import interpreter.Context;
+import interpreter.FormatosEnum;
+import interpreter.InterpreterClient;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,13 +44,14 @@ public class MiddlewareListener implements Runnable{
                 DataInputStream entrada = new DataInputStream(socket.getInputStream());
                 String texto = entrada.readUTF(); 
                 System.out.println("Resultado:"+texto);
-                
-                texto.contains(",");
-                
                 entrada.close();
-                
-                
                 servidorMiddleware.close();
+                
+                if(texto.contains(",")){
+                    this.mandarAlumno(texto);
+                }else{
+                    this.mandarMaestro();
+                }
         
             }
 
@@ -51,8 +60,24 @@ public class MiddlewareListener implements Runnable{
         }    
     }
     
-    public void mandarAlumno(){
+    public void mandarAlumno(String texto){
+        Context context = new Context(texto, FormatosEnum.CON, FormatosEnum.DON);
+        String transformado = InterpreterClient.interpretar(context);
         
+        try {
+            Socket alumnoSocket = new Socket("localhost",4446);
+
+
+            CommaObjectNotation con = new CommaObjectNotation();
+            DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
+            salida.writeUTF(transformado);
+
+            salida.close();
+
+
+        } catch (IOException ex) {
+                
+        }
     }
     
     public void mandarMaestro(){
