@@ -5,15 +5,24 @@
  */
 package Frames;
 
+import CommaObjectNotation.CommaObjectNotation;
+import alumnomaestro.Maestro;
 import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.swing.JTextArea;
 
 /**
  *
  * @author Lenovo
  */
 public class AlumnoListener implements Runnable{
+    
+    private JTextArea textArea;
+    
+    public AlumnoListener(JTextArea textArea){
+        this.textArea=textArea;
+    }
 
     @Override
     public void run() {
@@ -32,6 +41,9 @@ public class AlumnoListener implements Runnable{
                 
                 entrada.close();
                 servidorMiddleware.close();
+                CommaObjectNotation com = new CommaObjectNotation();
+                Maestro maestro = com.transformaMaestro(texto);
+                this.textArea.setText(maestro.toString());
             }
 
         } catch (Exception e) {

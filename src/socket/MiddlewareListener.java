@@ -6,6 +6,7 @@
 package socket;
 
 import CommaObjectNotation.CommaObjectNotation;
+import DotObjectNotatiton.DotObjectNotatiton;
 import interpreter.Context;
 import interpreter.FormatosEnum;
 import interpreter.InterpreterClient;
@@ -50,7 +51,7 @@ public class MiddlewareListener implements Runnable{
                 if(texto.contains(",")){
                     this.mandarAlumno(texto);
                 }else{
-                    this.mandarMaestro();
+                    this.mandarMaestro(texto);
                 }
         
             }
@@ -80,8 +81,22 @@ public class MiddlewareListener implements Runnable{
         }
     }
     
-    public void mandarMaestro(){
+    public void mandarMaestro(String texto){
+        Context context = new Context(texto, FormatosEnum.DON, FormatosEnum.CON);
+        String transformado = InterpreterClient.interpretar(context);
         
+        try{
+            
+            Socket maestroSocket = new Socket("localhost",4445);
+            
+            DotObjectNotatiton dot = new DotObjectNotatiton();
+            DataOutputStream salida = new DataOutputStream(maestroSocket.getOutputStream());
+            salida.writeUTF(transformado);
+            salida.close();
+           
+        }catch(IOException ex){
+            
+        }
     }
     
 }

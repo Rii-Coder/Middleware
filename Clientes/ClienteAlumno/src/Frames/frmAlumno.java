@@ -29,7 +29,7 @@ public class frmAlumno extends javax.swing.JFrame{
      */
     public frmAlumno() {
         initComponents();
-        Thread hilo = new Thread(new AlumnoListener());
+        Thread hilo = new Thread(new AlumnoListener(this.jtaResultado));
         hilo.start();
         EnviaTexto envia= new EnviaTexto();
         btnEnviar.addActionListener(envia);
