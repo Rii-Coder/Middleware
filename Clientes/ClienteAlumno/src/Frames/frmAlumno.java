@@ -31,8 +31,13 @@ public class frmAlumno extends javax.swing.JFrame{
         
         EnviaTexto envia= new EnviaTexto();
         btnEnviar.addActionListener(envia);
+        this.agregarComponentes();
     }
-
+    
+    public void agregarComponentes(){
+        
+        this.jtaResultado.setEditable(false);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -47,46 +52,51 @@ public class frmAlumno extends javax.swing.JFrame{
         btnEnviar = new javax.swing.JButton();
         Titulo = new javax.swing.JLabel();
         server = new javax.swing.JLabel();
+        jtfNombre = new javax.swing.JTextField();
+        jtfApellidos = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtaResultado = new javax.swing.JTextArea();
+        jLabel4 = new javax.swing.JLabel();
+        jsEdad = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.add(campoTexto, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 331, 54));
+
         btnEnviar.setText("Enviar");
+        jPanel1.add(btnEnviar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 260, 90, 54));
 
         Titulo.setFont(new java.awt.Font("Dialog", 0, 36)); // NOI18N
         Titulo.setText("Alumno");
+        jPanel1.add(Titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(292, 43, 145, -1));
 
         server.setText("Servidor:");
+        jPanel1.add(server, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 110, 331, -1));
+        jPanel1.add(jtfNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 140, 30));
+        jPanel1.add(jtfApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 140, 30));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(292, Short.MAX_VALUE)
-                .addComponent(Titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(264, 264, 264))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(156, 156, 156)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(server, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-                    .addComponent(campoTexto))
-                .addGap(27, 27, 27)
-                .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(Titulo)
-                .addGap(102, 102, 102)
-                .addComponent(server)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
-                    .addComponent(campoTexto))
-                .addContainerGap(247, Short.MAX_VALUE))
-        );
+        jLabel1.setText("Edad:");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 310, -1, -1));
+
+        jLabel2.setText("Nombre:");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, -1, -1));
+
+        jLabel3.setText("Apellidos:");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 270, -1, -1));
+
+        jtaResultado.setColumns(20);
+        jtaResultado.setRows(5);
+        jScrollPane1.setViewportView(jtaResultado);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 380, 370, -1));
+
+        jLabel4.setText("Recibido");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 360, -1, -1));
+        jPanel1.add(jsEdad, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, 140, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -101,7 +111,7 @@ public class frmAlumno extends javax.swing.JFrame{
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
 
     /**
      * @param args the command line arguments
@@ -142,34 +152,45 @@ public class frmAlumno extends javax.swing.JFrame{
     private javax.swing.JLabel Titulo;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JTextField campoTexto;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSpinner jsEdad;
+    private javax.swing.JTextArea jtaResultado;
+    private javax.swing.JTextField jtfApellidos;
+    private javax.swing.JTextField jtfNombre;
     private javax.swing.JLabel server;
     // End of variables declaration//GEN-END:variables
 
     
     public class EnviaTexto implements ActionListener {
 
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        
-        try {
-            Socket alumnoSocket = new Socket("localhost",4444);
-            
-            DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
-            
-            salida.writeUTF(campoTexto.getText());
-            
-            campoTexto.setText("");
-            
-            salida.close();
-            
-            
-        } catch (IOException ex) {
-            Logger.getLogger(EnviaTexto.class.getName()).log(Level.SEVERE, null, ex);
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+
+            try {
+                Socket alumnoSocket = new Socket("localhost",4444);
+
+                DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
+                
+                
+
+                salida.writeUTF(campoTexto.getText());
+
+                campoTexto.setText("");
+
+                salida.close();
+
+
+            } catch (IOException ex) {
+                Logger.getLogger(EnviaTexto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
-        
-    }
     
-}
+    } 
     
 }

@@ -154,7 +154,7 @@ public class frmMaestro extends javax.swing.JFrame{
     public void actionPerformed(ActionEvent ae) {
         
         try {
-            Socket alumnoSocket = new Socket("localhost",4445);
+            Socket alumnoSocket = new Socket("localhost",4444);
             
             DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
             

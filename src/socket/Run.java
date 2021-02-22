@@ -5,11 +5,7 @@
  */
 package socket;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -26,36 +22,29 @@ public class Run {
 
         try {
 
-            ServerSocket servidorAlumno;
-            ServerSocket servidorMaestro;
+            ServerSocket servidorMiddleware;
+        
             
             while (true) {
-                servidorAlumno = new ServerSocket(4444);
-                System.out.println("En espera alumno");
+                servidorMiddleware = new ServerSocket(4444);
+                System.out.println("En espera.");
                 
-                servidorMaestro = new ServerSocket(4445);
-                System.out.println("En espera maestro");
                 
-                Socket socketAlumno = servidorAlumno.accept();
-                System.out.println("Alumno aceptado");
                 
-                Socket socketMaestro = servidorMaestro.accept();
-                System.out.println("maestro aceptado");
+                Socket socket = servidorMiddleware.accept();
+                System.out.println("Aceptado");
+                
+                
 
-                DataInputStream entradaAlumno = new DataInputStream(socketAlumno.getInputStream());
-                String mensajeAlumno = entradaAlumno.readUTF();
-                System.out.println("alumno:"+mensajeAlumno);
+                DataInputStream entrada = new DataInputStream(socket.getInputStream());
+                String texto = entrada.readUTF(); 
+                System.out.println("Resultado:"+texto);
                 
-                entradaAlumno.close();
+                entrada.close();
                 
-                DataInputStream entradaMaestro = new DataInputStream(socketMaestro.getInputStream());
-                String mensajeMaestro = entradaMaestro.readUTF();
-                System.out.println("maestro:"+mensajeMaestro);
                 
-                entradaMaestro.close();
-                
-                servidorAlumno.close();
-                servidorMaestro.close();
+                servidorMiddleware.close();
+        
             }
 
         } catch (Exception e) {
