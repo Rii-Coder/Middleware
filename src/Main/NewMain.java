@@ -1,5 +1,7 @@
 package Main;
 
+import CommaObjectNotation.CommaObjectNotation;
+import alumnomaestro.Alumno;
 import interpreter.Context;
 import interpreter.FormatosEnum;
 import interpreter.InterpreterClient;
@@ -23,5 +25,10 @@ public class NewMain {
         
         Context contexto = new Context("perro/hola/2", FormatosEnum.DON, FormatosEnum.CON);
         System.out.println(InterpreterClient.interpretar(contexto));
+        
+        Alumno alumno;
+        CommaObjectNotation comma = new CommaObjectNotation();
+        alumno = comma.transformaAlumno("perro,hola,2");
+        System.out.println(alumno);
     }
 }
