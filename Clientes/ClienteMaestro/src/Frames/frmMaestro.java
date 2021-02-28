@@ -22,19 +22,19 @@ import java.util.logging.Logger;
  *
  * @author R2
  */
-public class frmMaestro extends javax.swing.JFrame{
+public class frmMaestro extends javax.swing.JFrame {
 
+    private ClienteMaestro clienteMaestro;
 
     /**
      * Creates new form frmAlumno
      */
     public frmMaestro() {
         initComponents();
-        
-        EnviaTexto envia= new EnviaTexto();
+
+        EnviaTexto envia = new EnviaTexto();
         btnEnviar.addActionListener(envia);
-        Thread hilo = new Thread(new MaestroListener(this.jtaRespuesta));
-        hilo.start();
+        clienteMaestro = new ClienteMaestro("localhost", 4445);
     }
 
     /**
@@ -167,7 +167,6 @@ public class frmMaestro extends javax.swing.JFrame{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
     /**
      * @param args the command line arguments
      */
@@ -221,35 +220,22 @@ public class frmMaestro extends javax.swing.JFrame{
     private javax.swing.JTextArea jtaRespuesta;
     // End of variables declaration//GEN-END:variables
 
-    
     public class EnviaTexto implements ActionListener {
 
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        
-        try {
-            Socket alumnoSocket = new Socket("localhost",4444);
-            
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+
             Maestro maestro = new Maestro();
             maestro.setNombre(jtNombre.getText());
             maestro.setApellidos(jtApellido.getText());
             maestro.setMateria(jtMateria.getText());
-            maestro.setNumero((int)jsNumero.getValue());
-            
+            maestro.setNumero((int) jsNumero.getValue());
+
             DotObjectNotatiton don = new DotObjectNotatiton();
-            DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
-            
-            salida.writeUTF(don.transformar(maestro));
-            
-            salida.close();
-            
-            
-        } catch (IOException ex) {
-            Logger.getLogger(EnviaTexto.class.getName()).log(Level.SEVERE, null, ex);
+            clienteMaestro.enviar(don.transformar(maestro));
+
         }
-        
+
     }
-    
-}
-    
+
 }

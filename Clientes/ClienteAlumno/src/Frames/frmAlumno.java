@@ -21,30 +21,31 @@ import java.util.logging.Logger;
  *
  * @author R2
  */
-public class frmAlumno extends javax.swing.JFrame{
+public class frmAlumno extends javax.swing.JFrame {
 
+    private ClienteAlumno clienteAlumno;
 
     /**
      * Creates new form frmAlumno
      */
     public frmAlumno() {
         initComponents();
-        Thread hilo = new Thread(new AlumnoListener(this.jtaResultado));
-        hilo.start();
-        EnviaTexto envia= new EnviaTexto();
+        clienteAlumno = new ClienteAlumno("localhost",4444);
+        EnviaTexto envia = new EnviaTexto();
         btnEnviar.addActionListener(envia);
         this.agregarComponentes();
         this.recibir();
     }
-    
-    public void agregarComponentes(){
-        
+
+    public void agregarComponentes() {
+
         this.jtaResultado.setEditable(false);
     }
-    
-    public void recibir(){
+
+    public void recibir() {
 
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -162,7 +163,6 @@ public class frmAlumno extends javax.swing.JFrame{
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
 
     /**
      * @param args the command line arguments
@@ -214,32 +214,21 @@ public class frmAlumno extends javax.swing.JFrame{
     private javax.swing.JTextField jtfNombre;
     // End of variables declaration//GEN-END:variables
 
-    
     public class EnviaTexto implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
+            
+            Alumno alumno = new Alumno();
+            alumno.setNombre(jtfNombre.getText());
+            alumno.setApellido(jtfApellidos.getText());
+            alumno.setEdad((int) jsEdad.getValue());
 
-            try {
-                Socket alumnoSocket = new Socket("localhost",4444);
-                Alumno alumno = new Alumno();
-                alumno.setNombre(jtfNombre.getText());
-                alumno.setApellido(jtfApellidos.getText());
-                alumno.setEdad((int)jsEdad.getValue()); 
-                
-                CommaObjectNotation con = new CommaObjectNotation();
-                DataOutputStream salida = new DataOutputStream(alumnoSocket.getOutputStream());
-                salida.writeUTF(con.transformar(alumno));
-
-                salida.close();
-
-
-            } catch (IOException ex) {
-                Logger.getLogger(EnviaTexto.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            CommaObjectNotation con = new CommaObjectNotation();
+            clienteAlumno.enviar(con.transformar(alumno));
 
         }
-    
-    } 
-    
+
+    }
+
 }
