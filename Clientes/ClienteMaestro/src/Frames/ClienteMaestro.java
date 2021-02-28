@@ -6,11 +6,9 @@
 package Frames;
 
 import DotObjectNotatiton.DotObjectNotatiton;
-import alumnomaestro.Alumno;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JTextArea;
 
@@ -19,12 +17,14 @@ import javax.swing.JTextArea;
  * @author Dhtey
  */
 public class ClienteMaestro{
+    
     private Socket socket;
     private DataInputStream bufferDeEntrada = null;
     private DataOutputStream bufferDeSalida = null;
-
-    public ClienteMaestro(String ip, int puerto){
-        ejecutarConexion(ip, puerto);
+    private JTextArea textArea;
+    
+    public ClienteMaestro(JTextArea textArea){
+        this.textArea = textArea;
     }
     
     public void levantarConexion(String ip, int puerto) {
@@ -89,20 +89,11 @@ public class ClienteMaestro{
         try {
             do {
                 st = (String) bufferDeEntrada.readUTF();
+                DotObjectNotatiton don = new DotObjectNotatiton();
+                this.textArea.setText(don.transformaAlumno(st).toString());
                 System.out.println("\n[Servidor] => " + st);
-                System.out.print("\n[Usted] => ");
             } while (true);
         } catch (IOException e) {}
     }
-
-    public void escribirDatos() {
-        String entrada = "";
-        while (true) {
-            System.out.print("[Usted] => ");
-         //   entrada = teclado.nextLine();
-            if(entrada.length() > 0)
-                enviar(entrada);
-        }
-    }
-    
 }
+

@@ -5,8 +5,6 @@
  */
 package socket;
 
-import CommaObjectNotation.CommaObjectNotation;
-import DotObjectNotatiton.DotObjectNotatiton;
 import interpreter.Context;
 import interpreter.FormatosEnum;
 import interpreter.InterpreterClient;
@@ -15,6 +13,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,130 +23,84 @@ import java.util.logging.Logger;
  */
 public class Servidor {
 
-    private Socket socketMaestro;
+
     private Socket socketAlumno;
-    private ServerSocket serverSocketMaestro;
     private ServerSocket serverSocketAlumno;
     private DataInputStream bufferDeEntradaAlumno = null;
     private DataOutputStream bufferDeSalidaAlumno = null;
-    private DataInputStream bufferDeEntradaMaestro = null;
-    private DataOutputStream bufferDeSalidaMaestro = null;
-
-    public Servidor() {
-        ejecutarConexion(4445, 4444);
-    }
-
-    public void levantarConexion(int puertoMaestro, int puertoAlumno) {
+    private ArrayList<Socket> conexiones;
+    
+    public Servidor(int puertoAlumno){
         try {
-            serverSocketMaestro = new ServerSocket(puertoMaestro);
+            this.conexiones = new ArrayList();
+            System.out.println("Iniciando servidor...");
             serverSocketAlumno = new ServerSocket(puertoAlumno);
+        } catch (IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void levantarConexion() {
+        try {
             
-            System.out.println("Esperando conexión entrante en el puerto alumno: " + puertoAlumno);
-            acceptAlumno();
-            System.out.println("Esperando conexión entrante en el puerto maestro: " + puertoMaestro);
-            acceptMaestro();
-
+            
+            System.out.println("Esperando conexion...");
+            this.socketAlumno = this.serverSocketAlumno.accept();
+            this.conexiones.add(this.socketAlumno);
+            System.out.println("Cliente " + this.socketAlumno.getPort() + " se ha conectado.");
         } catch (Exception e) {
             System.out.println("Error en levantarConexion(): " + e.getMessage());
             System.exit(0);
         }
     }
 
-    public void acceptMaestro() {
-        Thread hilo = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        socketMaestro = serverSocketMaestro.accept();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        hilo.start();
-    }
-
-    public void acceptAlumno() {
-        Thread hilo = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        socketAlumno = serverSocketAlumno.accept();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        hilo.start();
-    }
 
     public void flujos() {
         try {
             bufferDeEntradaAlumno = new DataInputStream(socketAlumno.getInputStream());
             bufferDeSalidaAlumno = new DataOutputStream(socketAlumno.getOutputStream());
-            bufferDeEntradaMaestro = new DataInputStream(socketMaestro.getInputStream());
-            bufferDeSalidaMaestro = new DataOutputStream(socketMaestro.getOutputStream());
             bufferDeSalidaAlumno.flush();
-            bufferDeSalidaMaestro.flush();
         } catch (IOException e) {
             System.out.println("Error en la apertura de flujos");
         }
     }
 
-    public void recibirDatos(String tipo) {
+    public void recibirDatos() {
         String st = "";
 
         try {
-
-            if (tipo.equals("maestro")) {
-
-                do {
-                    st = (String) bufferDeEntradaMaestro.readUTF();
-                    enviar(st, "alumno");
-                    System.out.println("\n[Cliente] => " + st);
-                    System.out.print("\n[Usted] => ");
-                } while (true);
-
-            } else if (tipo.equals("alumno")) {
-
-                do {
-                    st = (String) bufferDeEntradaAlumno.readUTF();
-                    enviar(st, "maestro");
-                    System.out.println("\n[Cliente] => " + st);
-                    System.out.print("\n[Usted] => ");
-                } while (true);
-
-            }
-
+            do {
+                System.out.println("Leyendo...");
+                st = (String) bufferDeEntradaAlumno.readUTF();
+                enviar(st);
+                System.out.println("\n[Cliente] => " + st);
+            } while (true);
         } catch (IOException e) {
             cerrarConexion();
         }
     }
 
-    public void enviar(String s, String tipo) {
+    public void enviar(String s) {
         try {
-
-            if (tipo.equals("maestro")) {
-                Context context = new Context(s, FormatosEnum.DON, FormatosEnum.CON);
-                String transformado = InterpreterClient.interpretar(context);
-                System.out.println("formato transformado: " + transformado);
-
-                bufferDeSalidaMaestro.writeUTF(transformado);
-                bufferDeSalidaMaestro.flush();
-
-            } else if (tipo.equals("alumno")) {
-                Context context = new Context(s, FormatosEnum.CON, FormatosEnum.DON);
-                String transformado = InterpreterClient.interpretar(context);
-                System.out.println("formato transformado: " + transformado);
-
-                bufferDeSalidaAlumno.writeUTF(transformado);
-                bufferDeSalidaAlumno.flush();
+            Context context = null;
+            if(true){
+                context = new Context(s, FormatosEnum.CON, FormatosEnum.DON);
+            }else{
+                context = new Context(s, FormatosEnum.DON, FormatosEnum.CON);
+                
             }
-
+            int index = this.conexiones.indexOf(this.socketAlumno);
+            
+            DataOutputStream destino = null;
+            if(true){
+                destino = new DataOutputStream(this.conexiones.get(1).getOutputStream());
+            }else{
+                destino = new DataOutputStream(this.conexiones.get(0).getOutputStream());
+            }
+            
+            String transformado = InterpreterClient.interpretar(context);
+            System.out.println("Formato transformado: " + transformado);
+            destino.writeUTF(transformado);
+            destino.flush();
         } catch (IOException e) {
             System.out.println("Error en enviar(): " + e.getMessage());
         }
@@ -155,11 +108,8 @@ public class Servidor {
 
     public void cerrarConexion() {
         try {
-            bufferDeEntradaMaestro.close();
-            bufferDeSalidaMaestro.close();
             bufferDeEntradaAlumno.close();
             bufferDeSalidaAlumno.close();
-            socketMaestro.close();
             socketAlumno.close();
         } catch (IOException e) {
             System.out.print("Excepción en cerrarConexion(): " + e.getMessage());
@@ -170,16 +120,15 @@ public class Servidor {
         }
     }
 
-    public void ejecutarConexion(int puertoMaestro, int puertoAlumno) {
+    public void ejecutarConexion() {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     try {
-                        levantarConexion(puertoMaestro, puertoAlumno);
+                        levantarConexion();
                         flujos();
-                        recibirDatos("maestro");
-                        recibirDatos("alumno");
+                        recibirDatos();
                     }catch(Exception e){
                         e.printStackTrace();
                     }

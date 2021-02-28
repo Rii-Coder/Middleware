@@ -5,18 +5,49 @@
  */
 package socket;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author R2
  */
 public class Run {
-
+    private ServerSocket serverSocket;
+    private ArrayList<Conexion> conexiones;
+    
+    public Run(int port){
+        this.conexiones = new ArrayList();
+        try {
+            System.out.println("Iniciando servidor...");
+            this.serverSocket = new ServerSocket(port);
+        } catch (IOException ex) {
+            Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void start(){
+        try {
+            while(true){
+                System.out.println("Esperando por conexion...");
+                Conexion conexion = new Conexion(this.serverSocket.accept(), this.conexiones);
+                System.out.println("Cliente " + conexion.getSocket().getPort() + " se ha conectado.");
+                conexion.ejecutarConexion();
+                this.conexiones.add(conexion);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
-        Servidor servidor = new Servidor();
+        
+        Run servidor = new Run(4444);
+        servidor.start();
 
     }
 

@@ -34,7 +34,8 @@ public class frmMaestro extends javax.swing.JFrame {
 
         EnviaTexto envia = new EnviaTexto();
         btnEnviar.addActionListener(envia);
-        clienteMaestro = new ClienteMaestro("localhost", 4445);
+        clienteMaestro = new ClienteMaestro(this.jtaRespuesta);
+        clienteMaestro.ejecutarConexion("localhost", 4444);
     }
 
     /**

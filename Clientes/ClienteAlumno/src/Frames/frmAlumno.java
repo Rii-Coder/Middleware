@@ -30,7 +30,8 @@ public class frmAlumno extends javax.swing.JFrame {
      */
     public frmAlumno() {
         initComponents();
-        clienteAlumno = new ClienteAlumno("localhost",4444);
+        clienteAlumno = new ClienteAlumno(this.jtaResultado);
+        clienteAlumno.ejecutarConexion("localhost", 4444);
         EnviaTexto envia = new EnviaTexto();
         btnEnviar.addActionListener(envia);
         this.agregarComponentes();
@@ -225,6 +226,7 @@ public class frmAlumno extends javax.swing.JFrame {
             alumno.setEdad((int) jsEdad.getValue());
 
             CommaObjectNotation con = new CommaObjectNotation();
+          
             clienteAlumno.enviar(con.transformar(alumno));
 
         }

@@ -5,11 +5,12 @@
  */
 package Frames;
 
+import CommaObjectNotation.CommaObjectNotation;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -20,10 +21,12 @@ public class ClienteAlumno{
     private Socket socket;
     private DataInputStream bufferDeEntrada = null;
     private DataOutputStream bufferDeSalida = null;
-
-    public ClienteAlumno(String ip, int puerto){
-        ejecutarConexion(ip, puerto);
+    private JTextArea textArea;
+    
+    public ClienteAlumno(JTextArea textArea){
+        this.textArea = textArea;
     }
+    
     
     public void levantarConexion(String ip, int puerto) {
         try {
@@ -87,20 +90,11 @@ public class ClienteAlumno{
         try {
             do {
                 st = (String) bufferDeEntrada.readUTF();
+                CommaObjectNotation con = new CommaObjectNotation();
+                this.textArea.setText(con.transformaMaestro(st).toString());
                 System.out.println("\n[Servidor] => " + st);
-                System.out.print("\n[Usted] => ");
             } while (true);
         } catch (IOException e) {}
-    }
-
-    public void escribirDatos() {
-        String entrada = "";
-        while (true) {
-            System.out.print("[Usted] => ");
-         //   entrada = teclado.nextLine();
-            if(entrada.length() > 0)
-                enviar(entrada);
-        }
     }
     
 }
