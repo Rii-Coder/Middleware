@@ -14,4 +14,6 @@ public abstract class FormatoExpression {
     public abstract String DON(String formato);
     
     public abstract String CON(String formato);
+    
+    public abstract String JSON(String formato);
 }

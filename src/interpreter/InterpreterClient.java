@@ -22,6 +22,8 @@ public class InterpreterClient {
                 return expresion.CON(contexto.getConversionQues());
             case DON:
                 return expresion.DON(contexto.getConversionQues());
+            case JSON:
+                return expresion.JSON(contexto.getConversionQues());
             default:
                 return null;
         }
@@ -33,8 +35,12 @@ public class InterpreterClient {
                 return new CONexpression();
             case DON:
                 return new DONexpression();
+            case JSON:
+                return new JSONexpression();
             default:
                 return null;
         }
     }
+    
+    
 }
