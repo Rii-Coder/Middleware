@@ -6,7 +6,6 @@
 package Frames;
 
 import alumnomaestro.Alumno;
-import alumnomaestro.Director;
 import alumnomaestro.Maestro;
 import com.google.gson.Gson;
 import java.io.DataInputStream;
