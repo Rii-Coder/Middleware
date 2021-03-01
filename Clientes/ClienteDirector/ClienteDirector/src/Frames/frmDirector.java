@@ -277,8 +277,8 @@ public class frmDirector extends javax.swing.JFrame {
             Director director = new Director();
             director.setNombre(jtfNombre.getText());
             director.setApellido(jtfApellidos.getText());
-            director.setEdad((int)jsEdad.getValue());
             director.setEscuela(jtfEscuela.getText());
+            director.setEdad((int)jsEdad.getValue());
             director.setId((int)jsId.getValue());
 
             Gson gson = new Gson();
