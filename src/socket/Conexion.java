@@ -19,6 +19,7 @@ import java.util.ArrayList;
  * @author Lenovo
  */
 public class Conexion {
+    private String nombre;
     private Socket socket;
     private DataInputStream bufferDeEntrada = null;
     private DataOutputStream bufferDeSalida = null;
@@ -48,15 +49,23 @@ public class Conexion {
             do {
                 System.out.println("Leyendo...");
                 st = (String) bufferDeEntrada.readUTF();
-                enviar(st, this.socket);
+                String[] datos = st.split("]");
+                String[] direcciones = datos[0].split("-");
+                this.nombre = direcciones[0].replace("[", "");
+                st = datos[1];
+                
+                
+                enviar(st, direcciones[1]);
                 System.out.println("\n[Cliente] => " + st);
+                
+                System.out.println(this.nombre);
             } while (true);
         } catch (IOException e) {
             cerrarConexion();
         }
     }
 
-    public void enviar(String s, Socket destino) {
+    public void enviar(String s, String destino) {
         try {
             Context context = null;
            

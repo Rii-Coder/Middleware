@@ -92,7 +92,7 @@ public class ClienteDirector{
             do {
                 st = (String) bufferDeEntrada.readUTF();
                 Gson gson = new Gson();
-                this.textArea.setText(gson.toJson(st,Director.class));
+                this.textArea.setText(gson.fromJson(st,Director.class).toString());
                 System.out.println("\n[Servidor] => " + st);
             } while (true);
         } catch (IOException e) {}
