@@ -5,7 +5,9 @@
  */
 package Frames;
 
+import alumnomaestro.Alumno;
 import alumnomaestro.Director;
+import alumnomaestro.Maestro;
 import com.google.gson.Gson;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -32,6 +34,7 @@ public class ClienteDirector{
     public void levantarConexion(String ip, int puerto) {
         try {
             socket = new Socket(ip, puerto);
+            this.abrirFlujos();
             System.out.println("Conectado a :" + socket.getInetAddress().getHostName());
         } catch (Exception e) {
             System.out.println("Excepción al levantar conexión: " + e.getMessage());
@@ -70,13 +73,11 @@ public class ClienteDirector{
         }
     }
 
-    public void ejecutarConexion(String ip, int puerto) {
+    public void ejecutarConexion() {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    levantarConexion(ip, puerto);
-                    abrirFlujos();
                     recibirDatos();
                 } finally {
                     cerrarConexion();
@@ -92,10 +93,23 @@ public class ClienteDirector{
             do {
                 st = (String) bufferDeEntrada.readUTF();
                 Gson gson = new Gson();
-                this.textArea.setText(gson.fromJson(st,Director.class).toString());
+                this.textArea.setText(gson.fromJson(st,this.determinarClase(st)).toString());
                 System.out.println("\n[Servidor] => " + st);
             } while (true);
         } catch (IOException e) {}
+    }
+    
+    private Class determinarClase(String format){
+        int contador = 0;
+        for(char c : format.toCharArray()){
+            if(c == ',') contador++;
+        }
+        
+        if(contador == 2){
+            return Alumno.class;
+        }else{
+            return Maestro.class;
+        }
     }
     
 }

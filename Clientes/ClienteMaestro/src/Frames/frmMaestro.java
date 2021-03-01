@@ -35,7 +35,9 @@ public class frmMaestro extends javax.swing.JFrame {
         EnviaTexto envia = new EnviaTexto();
         btnEnviar.addActionListener(envia);
         clienteMaestro = new ClienteMaestro(this.jtaRespuesta);
-        clienteMaestro.ejecutarConexion("localhost", 4444);
+        clienteMaestro.levantarConexion("localhost", 4444);
+        clienteMaestro.enviar("Maestro");
+        clienteMaestro.ejecutarConexion();
     }
 
     /**
@@ -242,7 +244,7 @@ public class frmMaestro extends javax.swing.JFrame {
 
             DotObjectNotatiton don = new DotObjectNotatiton();
             String destino = jComboBox1.getSelectedItem().toString();
-            clienteMaestro.enviar("[Maestro" + destino + "]" + don.transformar(maestro));
+            clienteMaestro.enviar("[" +destino+ "]" + don.transformar(maestro));
 
         }
 

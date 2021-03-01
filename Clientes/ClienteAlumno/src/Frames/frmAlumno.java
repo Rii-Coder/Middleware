@@ -31,21 +31,21 @@ public class frmAlumno extends javax.swing.JFrame {
     public frmAlumno() {
         initComponents();
         clienteAlumno = new ClienteAlumno(this.jtaResultado);
-        clienteAlumno.ejecutarConexion("localhost", 4444);
+        clienteAlumno.levantarConexion("localhost", 4444);
+        clienteAlumno.enviar("Alumno");
+        clienteAlumno.ejecutarConexion();
+        
         EnviaTexto envia = new EnviaTexto();
         btnEnviar.addActionListener(envia);
         this.agregarComponentes();
-        this.recibir();
     }
 
     public void agregarComponentes() {
 
         this.jtaResultado.setEditable(false);
     }
+    
 
-    public void recibir() {
-
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -238,7 +238,7 @@ public class frmAlumno extends javax.swing.JFrame {
             CommaObjectNotation con = new CommaObjectNotation();
           
             String destino = jComboBox1.getSelectedItem().toString();
-            clienteAlumno.enviar("[Alumno-" + destino +"]"+ con.transformar(alumno));
+            clienteAlumno.enviar("[" + destino +"]"+ con.transformar(alumno));
 
         }
 

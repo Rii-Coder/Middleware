@@ -13,6 +13,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +32,15 @@ public class Conexion {
     public Conexion(Socket socket, ArrayList<Conexion> conexiones){
         this.socket = socket;
         this.conexiones = conexiones;
+    }
+    
+    public void establecerConexion(){
+        try {
+            this.flujos();
+            this.nombre = (String) bufferDeEntrada.readUTF();
+        } catch (IOException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void flujos() {
@@ -50,12 +61,13 @@ public class Conexion {
                 System.out.println("Leyendo...");
                 st = (String) bufferDeEntrada.readUTF();
                 String[] datos = st.split("]");
-                String[] direcciones = datos[0].split("-");
-                this.nombre = direcciones[0].replace("[", "");
+                String destino = datos[0].replace("[", "");
                 st = datos[1];
                 
+                System.out.println("Nombre: " + this.nombre );
+                System.out.println("Destino: " + destino);
                 
-                enviar(st, direcciones[1]);
+                enviar(st, destino);
                 System.out.println("\n[Cliente] => " + st);
                 
                 System.out.println(this.nombre);
@@ -67,20 +79,10 @@ public class Conexion {
 
     public void enviar(String s, String destino) {
         try {
-            Context context = null;
+            Context context = new Context(s, this.determinarFormato(this.nombre), this.determinarFormato(destino));;
            
-            if(s.contains(",")){
-                context = new Context(s, FormatosEnum.CON, FormatosEnum.DON);
-            }else{
-                context = new Context(s, FormatosEnum.DON, FormatosEnum.CON);
-            }
             int index = this.conexiones.indexOf(this);
-            DataOutputStream salidaDestino = null;
-            if(index == 0){
-                salidaDestino = new DataOutputStream(this.conexiones.get(1).getSocket().getOutputStream());
-            }else{
-                salidaDestino = new DataOutputStream(this.conexiones.get(0).getSocket().getOutputStream());
-            }
+            DataOutputStream salidaDestino = new DataOutputStream(this.determinarDestinatario(destino).getOutputStream());
             
             String transformado = InterpreterClient.interpretar(context);
             System.out.println("Formato transformado: " + transformado);
@@ -90,7 +92,29 @@ public class Conexion {
             System.out.println("Error en enviar(): " + e.getMessage());
         }
     }
+    
+    private FormatosEnum determinarFormato(String tipo){
+        switch(tipo){
+            case "Alumno":
+                return FormatosEnum.CON;
+            case "Maestro":
+                return FormatosEnum.DON;
+            case "Director": 
+                return FormatosEnum.JSON;
+            default:
+                return null;
+        }
+    }
+    
+    private Socket determinarDestinatario(String nombre){
+        for(int f = 0; f < this.conexiones.size(); f++){
 
+            if(this.conexiones.get(f).getNombre().equals(nombre) ){
+                return this.conexiones.get(f).getSocket();
+            }
+        }
+        return null;
+    }
     public void cerrarConexion() {
         try {
             bufferDeEntrada.close();
@@ -110,7 +134,6 @@ public class Conexion {
             @Override
             public void run() {
                 try {
-                    flujos();
                     recibirDatos();
                 }catch(Exception e){
                     e.printStackTrace();
@@ -122,5 +145,9 @@ public class Conexion {
     
     public Socket getSocket(){
         return this.socket;
+    }
+    
+    public String getNombre(){
+        return this.nombre;
     }
 }

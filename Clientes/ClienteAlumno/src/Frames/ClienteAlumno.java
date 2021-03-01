@@ -6,6 +6,8 @@
 package Frames;
 
 import CommaObjectNotation.CommaObjectNotation;
+import alumnomaestro.Alumno;
+import alumnomaestro.Maestro;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -31,6 +33,7 @@ public class ClienteAlumno{
     public void levantarConexion(String ip, int puerto) {
         try {
             socket = new Socket(ip, puerto);
+            this.abrirFlujos();
             System.out.println("Conectado a :" + socket.getInetAddress().getHostName());
         } catch (Exception e) {
             System.out.println("Excepción al levantar conexión: " + e.getMessage());
@@ -69,13 +72,11 @@ public class ClienteAlumno{
         }
     }
 
-    public void ejecutarConexion(String ip, int puerto) {
+    public void ejecutarConexion() {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    levantarConexion(ip, puerto);
-                    abrirFlujos();
                     recibirDatos();
                 } finally {
                     cerrarConexion();
@@ -90,11 +91,25 @@ public class ClienteAlumno{
         try {
             do {
                 st = (String) bufferDeEntrada.readUTF();
-                CommaObjectNotation con = new CommaObjectNotation();
-                this.textArea.setText(con.transformaMaestro(st).toString());
+                
+                this.textArea.setText(this.determinarClase(st).toString());
                 System.out.println("\n[Servidor] => " + st);
             } while (true);
         } catch (IOException e) {}
+    }
+    
+    private Object determinarClase(String format){
+        int contador = 0;
+        for(char c : format.toCharArray()){
+            if(c == ',') contador++;
+        }
+        
+        CommaObjectNotation con = new CommaObjectNotation();
+        if(contador == 3){
+            return con.transformaMaestro(format);
+        }else{
+            return con.transformaDirector(format);
+        }
     }
     
 }

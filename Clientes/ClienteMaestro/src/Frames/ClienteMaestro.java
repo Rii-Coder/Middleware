@@ -30,6 +30,7 @@ public class ClienteMaestro{
     public void levantarConexion(String ip, int puerto) {
         try {
             socket = new Socket(ip, puerto);
+            this.abrirFlujos();
             System.out.println("Conectado a :" + socket.getInetAddress().getHostName());
         } catch (Exception e) {
             System.out.println("Excepción al levantar conexión: " + e.getMessage());
@@ -68,13 +69,11 @@ public class ClienteMaestro{
         }
     }
 
-    public void ejecutarConexion(String ip, int puerto) {
+    public void ejecutarConexion() {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    levantarConexion(ip, puerto);
-                    abrirFlujos();
                     recibirDatos();
                 } finally {
                     cerrarConexion();
@@ -89,11 +88,24 @@ public class ClienteMaestro{
         try {
             do {
                 st = (String) bufferDeEntrada.readUTF();
-                DotObjectNotatiton don = new DotObjectNotatiton();
-                this.textArea.setText(don.transformaAlumno(st).toString());
+                this.textArea.setText(this.determinarClase(st).toString());
                 System.out.println("\n[Servidor] => " + st);
             } while (true);
         } catch (IOException e) {}
+    }
+    
+        private Object determinarClase(String format){
+        int contador = 0;
+        for(char c : format.toCharArray()){
+            if(c == '/') contador++;
+        }
+        
+        DotObjectNotatiton don = new DotObjectNotatiton();
+        if(contador == 2){
+            return don.transformaAlumno(format);
+        }else{
+            return don.transformaDirector(format);
+        }
     }
 }
 

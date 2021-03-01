@@ -33,7 +33,9 @@ public class frmDirector extends javax.swing.JFrame {
     public frmDirector() {
         initComponents();
         clienteDirector = new ClienteDirector(this.jtaResultado);
-        clienteDirector.ejecutarConexion("localhost", 4444);
+        clienteDirector.levantarConexion("localhost", 4444);
+        clienteDirector.enviar("Director");
+        clienteDirector.ejecutarConexion();
         EnviaTexto envia = new EnviaTexto();
         btnEnviar.addActionListener(envia);
         this.agregarComponentes();
@@ -281,7 +283,7 @@ public class frmDirector extends javax.swing.JFrame {
 
             Gson gson = new Gson();
             String destino = jComboBox1.getSelectedItem().toString();
-            clienteDirector.enviar("[Director-" + destino + "]" + gson.toJson(director));
+            clienteDirector.enviar("[" + destino + "]" + gson.toJson(director));
             
           //  CommaObjectNotation con = new CommaObjectNotation();
           

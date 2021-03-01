@@ -33,7 +33,8 @@ public class Run {
             while(true){
                 System.out.println("Esperando por conexion...");
                 Conexion conexion = new Conexion(this.serverSocket.accept(), this.conexiones);
-                System.out.println("Cliente " + conexion.getSocket().getPort() + " se ha conectado.");
+                conexion.establecerConexion();
+                System.out.println("Cliente " + conexion.getNombre() + " se ha conectado.");
                 conexion.ejecutarConexion();
                 this.conexiones.add(conexion);
             }
