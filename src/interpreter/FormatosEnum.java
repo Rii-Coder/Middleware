@@ -11,5 +11,6 @@ package interpreter;
  */
 public enum FormatosEnum {
     CON,
-    DON
+    DON,
+    JSON
 }

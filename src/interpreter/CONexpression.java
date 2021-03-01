@@ -5,6 +5,10 @@
  */
 package interpreter;
 
+import CommaObjectNotation.CommaObjectNotation;
+import alumnomaestro.Alumno;
+import com.google.gson.Gson;
+
 
 /**
  *
@@ -21,6 +25,15 @@ public class CONexpression extends FormatoExpression{
     @Override
     public String CON(String formato) {
         return formato;
+    }
+
+    @Override
+    public String JSON(String formato) {
+        CommaObjectNotation comma = new CommaObjectNotation();
+        Alumno alumno = comma.transformaAlumno(formato);
+        
+        Gson gson = new Gson();
+        return gson.toJson(alumno);
     }
     
 }
