@@ -30,13 +30,12 @@ public class ClienteMaestro implements Framer {
     private InputStream in = null;
     private OutputStream out = null;
     private JTextArea textArea;
-    private static final byte DELIMITADOR = '\n';
+    private static final byte DELIMITADOR = '~';
 
     public ClienteMaestro(JTextArea textArea) {
         this.textArea = textArea;
     }
 
-    
     private byte[] serializar(String cadena) {
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         DataOutputStream os = new DataOutputStream(bs);
@@ -83,23 +82,31 @@ public class ClienteMaestro implements Framer {
     }
 
     public void enviar(String s) {
-        
-//        byte[] bytes = serializar(s);
-//        
-//        System.out.println("Mensaje serializado: "+bytes);
-        
+        byte[] bytes = serializar(s);
+        in = new DataInputStream(new ByteArrayInputStream(bytes));
+        out = new DataOutputStream(new ByteArrayOutputStream());
+
         try {
-            
-//            frameMsg(bytes, bufferDeSalida);
-//            bytes = nextMsg(bufferDeEntrada);
-//            
-//            String entregado = deserializar(bytes);
-//            System.out.println("Mensaje deserializado: "+entregado);
-//            System.out.println("Se envio");
-            
-            bufferDeSalida.writeUTF(s);
-            bufferDeSalida.flush();
-            
+            if (!s.equalsIgnoreCase("maestro")) {
+
+                System.out.println("Mensaje serializado: " + bytes.toString());
+
+                frameMsg(bytes, out);
+                bytes = nextMsg(in);
+
+                out.close();
+                in.close();
+
+                String entregado = deserializar(bytes);
+                System.out.println("Mensaje deserializado: " + entregado);
+                System.out.println("Se envio");
+                bufferDeSalida.writeUTF(entregado);
+                bufferDeSalida.flush();
+            } else {
+                bufferDeSalida.writeUTF(s);
+                bufferDeSalida.flush();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -179,7 +186,7 @@ public class ClienteMaestro implements Framer {
                 if (messageBuffer.size() == 0) {
                     return null;
                 } else {
-                    throw new EOFException("mensaje sin delimitador");
+                    return messageBuffer.toByteArray();
                 }
 
             }

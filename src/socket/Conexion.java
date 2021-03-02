@@ -79,7 +79,7 @@ public class Conexion {
 
     public void enviar(String s, String destino) {
         try {
-            Context context = new Context(s, this.determinarFormato(this.nombre), this.determinarFormato(destino));;
+            Context context = new Context(s, this.determinarFormato(this.nombre), this.determinarFormato(destino));
            
             int index = this.conexiones.indexOf(this);
             DataOutputStream salidaDestino = new DataOutputStream(this.determinarDestinatario(destino).getOutputStream());
