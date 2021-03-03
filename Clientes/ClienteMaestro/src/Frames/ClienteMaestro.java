@@ -27,6 +27,7 @@ public class ClienteMaestro implements Framer {
     private Socket socket;
     private DataInputStream bufferDeEntrada = null;
     private DataOutputStream bufferDeSalida = null;
+    
     private InputStream in = null;
     private OutputStream out = null;
     private JTextArea textArea;
