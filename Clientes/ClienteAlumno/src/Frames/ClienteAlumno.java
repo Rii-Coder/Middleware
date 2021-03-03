@@ -63,9 +63,6 @@ public class ClienteAlumno implements Framer{
         byte[] bytes = serializar(s);
         in = new DataInputStream(new ByteArrayInputStream(bytes));
         out = new DataOutputStream(new ByteArrayOutputStream());
-        for(byte b : bytes){
-            System.out.println("Antes" + b);
-        }
         try {
             if (!s.equalsIgnoreCase("alumno")) {
                 
@@ -83,11 +80,10 @@ public class ClienteAlumno implements Framer{
                 out.close();
                 in.close();
                 byte[] deserealizado = new byte[mensajeArmado.size()];
-                System.out.println("Despues");
+          
                 for(int f = 0; f < deserealizado.length; f++){
                     
                     deserealizado[f] = mensajeArmado.get(f);
-                    System.out.println("bucle" + deserealizado[f]);
                 }
                 String entregado = deserializar(bytes);
                 System.out.println("mensaje" + entregado);
